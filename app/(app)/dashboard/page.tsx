@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
+import { createServiceClient } from "@/lib/supabase/service";
 import { formatIDR, startOfDayJakarta } from "@/lib/currency";
 import Link from "next/link";
 
@@ -8,8 +9,11 @@ export default async function DashboardPage() {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
 
+  // Gunakan service client untuk fetch profil agar tidak tergantung RLS
+  // (RLS profiles_select_own kadang gagal karena circular policy pada admin check)
+  const serviceClient = createServiceClient();
   const { data: profile } = user
-    ? await supabase.from("profiles").select("role, display_name").eq("id", user.id).maybeSingle()
+    ? await serviceClient.from("profiles").select("role, display_name").eq("id", user.id).maybeSingle()
     : { data: null };
 
   const isAdmin = profile?.role === "admin";

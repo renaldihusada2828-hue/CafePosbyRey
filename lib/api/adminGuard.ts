@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
+import { createServiceClient } from "@/lib/supabase/service";
 import { NextResponse } from "next/server";
 
 type GuardResult =
@@ -12,7 +13,9 @@ export async function requireAdmin(): Promise<GuardResult> {
   if (!user)
     return { ok: false, response: NextResponse.json({ error: "Sesi tidak ditemukan." }, { status: 401 }) };
 
-  const { data: profile } = await supabase
+  // Pakai service client agar fetch profil tidak tergantung RLS
+  const service = createServiceClient();
+  const { data: profile } = await service
     .from("profiles")
     .select("role, is_active")
     .eq("id", user.id)
@@ -31,7 +34,9 @@ export async function requireAuth(): Promise<GuardResult> {
   if (!user)
     return { ok: false, response: NextResponse.json({ error: "Sesi tidak ditemukan." }, { status: 401 }) };
 
-  const { data: profile } = await supabase
+  // Pakai service client agar fetch profil tidak tergantung RLS
+  const service = createServiceClient();
+  const { data: profile } = await service
     .from("profiles")
     .select("role, is_active")
     .eq("id", user.id)
