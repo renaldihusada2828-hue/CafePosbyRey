@@ -447,3 +447,5 @@ melekcafe-pos/
 ## Lisensi
 
 Project ini dibuat untuk MelekCafe. Hubungi owner untuk penggunaan.
+#   C a f e P o s b y R e y  
+ 
