@@ -27,8 +27,9 @@ export async function middleware(request: NextRequest) {
 
   const pathname    = request.nextUrl.pathname;
   const isLoginPage = pathname === "/login";
-  const isRoot      = pathname === "/";
-  const isPublic    = isLoginPage || isRoot;
+  const isRoot = pathname === "/";
+  const isLoginApi = pathname === "/api/auth/login";
+  const isPublic = isLoginPage || isRoot || isLoginApi;
 
   if (!user && !isPublic) {
     const loginUrl = new URL("/login", request.url);
